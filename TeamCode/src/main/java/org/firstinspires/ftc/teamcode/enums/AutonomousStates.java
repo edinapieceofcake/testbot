@@ -1,0 +1,28 @@
+package org.firstinspires.ftc.teamcode.enums;
+
+
+public enum AutonomousStates {
+    START,
+    LATCHED,
+    DROPPED,
+    MINERAL_LOCATED,
+    MOVED_FORWARD,
+    AT_MINERAL,
+    MINERAL_PUSHED,
+    BACKED_AWAY_FROM_MINERAL,
+    AT_DEPOT,
+    DROPPED_MARKER,
+    AT_LEFT_WALL,
+    TURNED_TOWARDS_CRATER,
+    AT_CRATER,
+    ARM_EXTENDED,
+    FLIP_AT_BACK,
+    TURNED_TOWARDS_DEPOT,
+    FACING_CRATER,
+    COMPLETED_TURN,
+    MOVED_OFF_LATCH,
+    MOVED_BACK_TO_CENTER,
+    TURNED_TOWARDS_LEFT_WALL,
+    BACK_AT_MIDDLE,
+    MINED
+}
