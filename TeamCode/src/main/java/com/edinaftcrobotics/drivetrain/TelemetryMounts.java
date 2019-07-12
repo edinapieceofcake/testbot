@@ -80,9 +80,17 @@ public class TelemetryMounts {
         radius = Math.sqrt(Math.pow(strafe, 2) + Math.pow(forward, 2));
         theta = Math.atan2(forward, strafe);
 
-//        Putting these back into x and y, but rotating them by the robot's orientation
-        x += Math.cos(Math.toRadians(r) + theta) * radius;
-        y += Math.sin(Math.toRadians(r) + theta) * radius;
+
+//        This will be how many divisions of the arc will occur
+//        The more iterations, the better the arc, but the more processing power used
+//        This only really be high if the encoders are called infrequently
+        int resolution = 1;
+
+        for (int i = 0; i < resolution; i++) {
+            x += Math.cos(Math.toRadians(r) + (theta / resolution) * (i + 1)) * (radius / resolution);
+            y += Math.sin(Math.toRadians(r) + (theta / resolution) * (i + 1)) * (radius / resolution);
+        }
+
 
 
     }
