@@ -272,6 +272,44 @@ public class Mecanum {
         _backRight.setPower(-br * _currentPower);
     }
 
+    public void assistedDrive(double x, double y, double rot, double heading){
+
+//        The + Math.PI / 4.0 is to account for the strafing wheels
+        final double direction = Math.atan2(x, y) + Math.PI / 4.0;
+//        The local direction is to account for the direction the robot is pointing in relative to the field
+        final double localDirection = Math.toRadians(heading) - direction;
+        final double speed = Math.min(1.0, Math.sqrt(x * x + y * y));
+
+//        motorMax is to have a max requested power value that the code can
+//        use to divert power from moving to rotate as well without
+//        going past the max limit for power
+        final double motorMax = _currentPower * (speed + Math.abs(rot));
+
+//        Setting moving values while regulating them to save power for rotation
+        double fl = ((motorMax - Math.abs(rot)) / motorMax) * speed * Math.sin(localDirection);
+        double fr = ((motorMax - Math.abs(rot)) / motorMax) * speed * Math.cos(localDirection);
+        double bl = ((motorMax - Math.abs(rot)) / motorMax) * speed * Math.cos(localDirection);
+        double br = ((motorMax - Math.abs(rot)) / motorMax) * speed * Math.sin(localDirection);
+
+//        Adding rotation values while regulating them to save power for moving
+        fl += ((motorMax - speed) / motorMax) * rot;
+        fr -= ((motorMax - speed) / motorMax) * rot;
+        bl += ((motorMax - speed) / motorMax) * rot;
+        br -= ((motorMax - speed) / motorMax) * rot;
+
+//        Capping the values to keep them from going over max speed
+        fl = fl > 1? 1 : fl < -1? -1 : fl;
+        fr = fr > 1? 1 : fr < -1? -1 : fr;
+        bl = bl > 1? 1 : bl < -1? -1 : bl;
+        br = br > 1? 1 : br < -1? -1 : br;
+
+        _frontLeft.setPower(-fl);
+        _frontRight.setPower(-fr);
+        _backLeft.setPower(-bl);
+        _backRight.setPower(-br);
+
+    }
+
     public void SetCurrentPower(double power){
         _currentPower = power;
     }
