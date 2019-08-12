@@ -23,6 +23,7 @@ public class Robot implements OpModeManagerNotifier.Notifications {
     private ExecutorService subsystemUpdateExecutor;
     private List<Subsystem> subsystems;
     public MecanumDrive drive;
+    private boolean started;
 
     private Runnable subsystemUpdateRunnable = () -> {
         while (!Thread.currentThread().isInterrupted()) {
@@ -55,6 +56,13 @@ public class Robot implements OpModeManagerNotifier.Notifications {
         }
 
         subsystemUpdateExecutor = ThreadPool.newSingleThreadExecutor("subsystem update");
+    }
+
+    public void start() {
+        if (!started) {
+            subsystemUpdateExecutor.submit(subsystemUpdateRunnable);
+            started = true;
+        }
     }
 
     private void stop() {
