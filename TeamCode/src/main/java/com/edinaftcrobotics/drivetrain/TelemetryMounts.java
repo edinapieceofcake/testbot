@@ -3,25 +3,33 @@ package com.edinaftcrobotics.drivetrain;
 public class TelemetryMounts {
 
 //    Diameter of the omniwheels
-    public static final double OMNI_DIAMETER = 2.875;
+    private double omniDiameter;
 //    Diameter of the mecanum wheels
-    public static final double MECANUM_DIAMETER = 4;
+    private double mecanumDiameter;
 //    How many ticks it is for a full 360
-    public static final double CPR = 200;
+    private double CPR;
 //    The distance between the two omniwheels
-    public static final double DIAMETER = Double.NaN; // this is currently unknown, so for now its just NaN
+    private double diameter;
 
     private double x;
     private double y;
     private double r;
 
-    public TelemetryMounts(){
-        set(0, 0,0);
+//    If the user wants to start at a specific location
+    public TelemetryMounts(double x, double y, double r, double omniDiameter, double mecanumDiameter, double CPR, double diameter){
+        set(x, y, r);
+        this.omniDiameter = omniDiameter;
+        this.mecanumDiameter = mecanumDiameter;
+        this.CPR = CPR;
+        this.diameter = diameter;
     }
 
-//    If the user wants to start at a specific location
-    public TelemetryMounts(double x, double y, double r){
+    public TelemetryMounts(double omniDiameter, double mecanumDiameter, double CPR, double diameter){
         set(x, y, r);
+        this.omniDiameter = omniDiameter;
+        this.mecanumDiameter = mecanumDiameter;
+        this.CPR = CPR;
+        this.diameter = diameter;
     }
 
     public void set(double x, double y, double r){
@@ -36,7 +44,7 @@ public class TelemetryMounts {
 //        if the imu is more reliable than this, then use the other method
         int difference = leftEncoderTranslate - rightEncoderTranslate;
         double distance = toDistance(difference);
-        r += (distance / (DIAMETER * Math.PI)) * 360;
+        r += (distance / (diameter * Math.PI)) * 360;
 
 //        This double modulo is to loop the negatives as well
         r = ((r % 360) + 360) % 360;
@@ -68,7 +76,7 @@ public class TelemetryMounts {
 //        This double modulo is to loop the negatives as well
         r = ((r % 360) + 360) % 360;
 
-//        This are our local velocities
+//        These are our local velocities
         double forward, strafe;
 
         strafe = toDistance(strafeEncoderTranslate);
@@ -96,7 +104,7 @@ public class TelemetryMounts {
     }
 
     private double toDistance(int ticks){
-        return (ticks / CPR) * OMNI_DIAMETER * Math.PI;
+        return (ticks / CPR) * omniDiameter * Math.PI;
     }
 
     public double getX(){

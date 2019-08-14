@@ -2,7 +2,6 @@ package com.edinaftcrobotics.drivetrain;
 
 import com.edinaftcrobotics.drivetrain.Mecanum;
 import com.edinaftcrobotics.drivetrain.TelemetryMounts;
-import com.edinaftcrobotics.navigation.RevImu;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -15,9 +14,6 @@ public class DriveAssist extends OpMode {
     private PieceOfCake robot;
     private Mecanum mecanum;
     private TelemetryMounts tm;
-    private double rot;
-    private imuChecker checker;
-    private RevImu imu;
 
     @Override
     public void init() {
@@ -26,56 +22,24 @@ public class DriveAssist extends OpMode {
         robot.init(hardwareMap);
 
         mecanum = new Mecanum(robot.getFrontL(), robot.getFrontR(), robot.getBackL(), robot.getBackR(), true, telemetry);
-        tm = new TelemetryMounts();
-
-        try {
-            imu = new RevImu(hardwareMap, telemetry);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-
-        imu.start();
-
-        checker = new imuChecker(imu);
-        checker.start();
-
-        rot = 0;
-
+        tm = new TelemetryMounts(2.875, 4, 360, 15.5);
 
     }
 
     @Override
     public void loop() {
+        mecanum.StopAndResetMotors3();
+        int left = robot.getBackR().getCurrentPosition();
+        int strafe = robot.getBackL().getCurrentPosition();
+        int right = robot.getFrontR().getCurrentPosition();
 
-        rot = checker.getHeading();
+        tm.update(right, left, strafe);
 
-        mecanum.assistedDrive(gamepad1.left_stick_x, gamepad1.left_stick_y, gamepad1.right_stick_x, rot);
-
-        telemetry.addData("Rotation", rot);
+        mecanum.assistedDrive(gamepad1.left_stick_x, gamepad1.left_stick_y, gamepad1.right_stick_x, tm.getHeading());
+        telemetry.addData("Rotation", tm.getHeading());
         telemetry.update();
 
-    }
-
-    private class imuChecker extends Thread{
-
-        private RevImu imu;
-        private double rot;
-
-        public imuChecker(RevImu imu){
-            this.imu = imu;
-        }
-
-        public void run(){
-            while(true){
-
-                rot = imu.getAngle();
-
-            }
-        }
-
-        public double getHeading(){
-            return rot;
-        }
 
     }
+
 }

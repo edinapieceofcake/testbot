@@ -2,7 +2,6 @@ package com.edinaftcrobotics.navigation;
 
 import com.edinaftcrobotics.drivetrain.Mecanum;
 import com.edinaftcrobotics.drivetrain.TelemetryMounts;
-import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
 import java.util.ArrayList;
 
@@ -13,12 +12,13 @@ public class PurePursuit extends Thread {
     private boolean on;
     private TelemetryMounts tm;
     //    This is in inches
-    private final double LOOKAHEAD = 10;
+    private double lookahead = 10;
 
-    public PurePursuit(Mecanum m, TelemetryMounts tm) {
+    public PurePursuit(Mecanum m, TelemetryMounts tm, double lookahead) {
 
         mecanum = m;
         this.tm = tm;
+        this.lookahead = lookahead;
 
     }
 
@@ -76,14 +76,14 @@ public class PurePursuit extends Thread {
 
                 double toLineEnd = Math.sqrt(x * x + y * y);
 
-                if (toLineEnd > LOOKAHEAD) {
+                if (toLineEnd > lookahead) {
                     points.remove(0);
                 }
 
                 double m = (points.get(1)[1] - points.get(0)[1]) / (points.get(1)[0] - points.get(0)[0]);
                 double b = -m * points.get(0)[0] + points.get(0)[1];
 
-                double r = LOOKAHEAD;
+                double r = lookahead;
                 double h = tm.getX();
                 double k = tm.getY();
 

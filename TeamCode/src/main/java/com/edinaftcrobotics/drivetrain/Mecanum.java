@@ -219,6 +219,10 @@ public class Mecanum {
         _backRight.setPower(0);
     }
 
+    public void setCurrentPower(double cp){
+        _currentPower = Math.min(1.0, Math.abs(cp));
+    }
+
     //
     // This method will calculate a power based on the current position and our maximum distance.
     // This a very simple motion profile method that uses distance to figure out different power
@@ -274,8 +278,13 @@ public class Mecanum {
 
     public void assistedDrive(double x, double y, double rot, double heading){
 
+//        Reversing the polarities because of the way joysticks work
+        y *= -1;
+        rot *= -1;
+        rot = (rot > 1)? 1: (rot < -1)? -1 : rot;
+
 //        The + Math.PI / 4.0 is to account for the strafing wheels
-        final double direction = Math.atan2(x, y) + Math.PI / 4.0;
+        final double direction = Math.atan2(y, x) + Math.PI / 4.0;
 //        The local direction is to account for the direction the robot is pointing in relative to the field
         final double localDirection = Math.toRadians(heading) - direction;
         final double speed = Math.min(1.0, Math.sqrt(x * x + y * y));
