@@ -102,7 +102,11 @@ public class PurePursuit extends Thread {
                 double toLineEnd = Math.sqrt(x * x + y * y);
 
                 if (toLineEnd < lookahead) {
+                    mecanum.Stop();
                     points.remove(0);
+                    if(points.size() < 2)
+                        continue;
+
                 }
 
                 temp += "Distance to nearest point: " + toLineEnd + "\n";
@@ -228,26 +232,28 @@ public class PurePursuit extends Thread {
                 double dist = dist(lookaheadPoint[0] - tm.getX(), lookaheadPoint[1] - tm.getY());
                 dist = dist > 1 ? 1 : dist < -1 ? -1 : dist;
 
+                double[] nearestPoint = points.get(points.size() > 1? 1 : 0);
+
 //            Rotation
                 double r = tm.getHeading();
 //            Target Rotation
-                tr = (lookaheadPoint.length == 3) ? points.get(1)[2] : tr;
+                tr = (lookaheadPoint.length == 3) ? nearestPoint[2] : tr;
 
                 mecanum.assistedDrive(
                         Math.cos(angle) * dist,
                         -Math.sin(angle) * dist,
-                        points.get(1).length == 3 ?
+                        nearestPoint.length == 3 ?
                                 (loop(tr - r) > loop(r - tr) ?
-                                        r - tr * 10
+                                        r - tr
                                         :
-                                        tr - r * 10
-                                ) / 180
+                                        tr - r
+                                )
                                 :
                                 0,
                         tm.getHeading()
                 );
 
-                temp += "Nearest point: (" + points.get(1)[0] + ", " + points.get(1)[1] + ")\n";
+                temp += "Nearest point: (" + nearestPoint[0] + ", " + nearestPoint[1] + ")\n";
                 temp += "Lookahead point: (" + lookaheadPoint[0] + ", " + lookaheadPoint[1] + ")\n";
                 temp += "Angle: " + angle + ", Lookahead: " + lookahead + "\n";
                 temp += "X: " + tm.getX() + ", Y: " + tm.getY() + "\n";
