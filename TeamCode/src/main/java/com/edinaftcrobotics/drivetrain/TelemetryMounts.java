@@ -44,7 +44,7 @@ public class TelemetryMounts {
 //        if the imu is more reliable than this, then use the other method
         int difference = leftEncoderTranslate - rightEncoderTranslate;
         double distance = toDistance(difference);
-        r += (distance / (diameter * Math.PI)) * 360;
+        r += (distance / (diameter * Math.PI)) * 360 * 0.5;
 
 //        This double modulo is to loop the negatives as well
         r = ((r % 360) + 360) % 360;

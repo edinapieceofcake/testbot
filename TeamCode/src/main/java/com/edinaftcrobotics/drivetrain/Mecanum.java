@@ -276,6 +276,22 @@ public class Mecanum {
         _backRight.setPower(-br * _currentPower);
     }
 
+    public DcMotor getFL() {
+        return _frontLeft;
+    }
+
+    public DcMotor getFR() {
+        return _frontRight;
+    }
+
+    public DcMotor getBL() {
+        return _backLeft;
+    }
+
+    public DcMotor getBR() {
+        return _backRight;
+    }
+
     public void assistedDrive(double x, double y, double rot, double heading){
 
 //        Reversing the polarities because of the way joysticks work
@@ -285,6 +301,7 @@ public class Mecanum {
 
 //        The + Math.PI / 4.0 is to account for the strafing wheels
         final double direction = Math.atan2(y, x) + Math.PI / 4.0;
+
 //        The local direction is to account for the direction the robot is pointing in relative to the field
         final double localDirection = Math.toRadians(heading) - direction;
         final double speed = Math.min(1.0, Math.sqrt(x * x + y * y));
@@ -292,7 +309,7 @@ public class Mecanum {
 //        motorMax is to have a max requested power value that the code can
 //        use to divert power from moving to rotate as well without
 //        going past the max limit for power
-        final double motorMax = _currentPower * (speed + Math.abs(rot));
+        final double motorMax = (speed + Math.abs(rot));
 
 //        Setting moving values while regulating them to save power for rotation
         double fl = ((motorMax - Math.abs(rot)) / motorMax) * speed * Math.sin(localDirection);
@@ -305,6 +322,11 @@ public class Mecanum {
         fr -= ((motorMax - speed) / motorMax) * rot;
         bl += ((motorMax - speed) / motorMax) * rot;
         br -= ((motorMax - speed) / motorMax) * rot;
+
+        fl *= _currentPower;
+        fr *= _currentPower;
+        bl *= _currentPower;
+        br *= _currentPower;
 
 //        Capping the values to keep them from going over max speed
         fl = fl > 1? 1 : fl < -1? -1 : fl;
