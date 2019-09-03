@@ -22,7 +22,7 @@ public class RobotOpMode extends OpMode {
     public void loop() {
         mecanum.Drive(gamepad1.left_stick_x, gamepad1.left_stick_y, gamepad1.right_stick_x);
 
-        telemetry.addData("Lf, rf, lb, rb: ", "%d %d %d %d", robot.getFrontL().getCurrentPosition(),
+        telemetry.addData("FL, FR, BL, BR: ", "%d %d %d %d", robot.getFrontL().getCurrentPosition(),
                 robot.getFrontR().getCurrentPosition(), robot.getBackL().getCurrentPosition(),
                 robot.getBackR().getCurrentPosition());
         telemetry.update();

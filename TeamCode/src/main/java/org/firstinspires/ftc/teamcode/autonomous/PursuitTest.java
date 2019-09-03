@@ -39,7 +39,7 @@ public class PursuitTest extends LinearOpMode {
         path.add(new double[]{20, 0});
         path.add(new double[]{0, 0});
 
-        m.setCurrentPower(0.3);
+        m.setCurrentPower(0.5);
         p.start();
         p.moveTo(path);
         while(p.isBusy()){
